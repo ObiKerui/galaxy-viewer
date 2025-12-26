@@ -39,6 +39,10 @@ export function DebugPoints({
   size = 1,
   color = 'white',
 }: DebugPointsProps) {
+  const texture = useLoader(
+    THREE.TextureLoader,
+    '/textures/starCluster.png' // must have alpha
+  );
   const positions = useMemo(() => {
     return points instanceof Float32Array ? points : new Float32Array(points);
   }, [points]);
@@ -46,9 +50,10 @@ export function DebugPoints({
   return (
     <Points positions={positions}>
       <PointMaterial
+        map={texture}
         size={size}
         color={color}
-        opacity={0.1}
+        opacity={0.2}
         transparent
         sizeAttenuation
         depthTest
@@ -75,23 +80,12 @@ export function Branch({
   opacity = 0.2,
   seed = 1,
 }: tProps) {
-  // const activeRef = useRef<boolean[]>([]);
   const ref = useRef<THREE.Group>(null);
-
-  // const atlasTexture = useLoader(
-  //   THREE.TextureLoader,
-  //   '/textures/med-detail-atlas.png'
-  // );
 
   const atlasTexture = useLoader(
     THREE.TextureLoader,
     '/textures/high-detail-atlas.png'
   );
-
-  // const atlasTexture = useLoader(
-  //   THREE.TextureLoader,
-  //   '/textures/newTextureAtlas2.png'
-  // );
 
   const points = useMemo(() => {
     const pts = generateEclipseBranchingPoints(
@@ -104,8 +98,6 @@ export function Branch({
     const positions = convertToArrayBuffer(randomized);
     return positions;
   }, [radius, count, seed]);
-
-  const quadPositions = useMemo(() => points.slice(), [points]);
 
   const directionToCenter = useMemo(() => {
     return new THREE.Vector3(0, 0, 0).sub(center).normalize();
@@ -125,12 +117,12 @@ export function Branch({
     return new THREE.Quaternion().setFromUnitVectors(from, sideways);
   }, [directionToCenter]);
 
+  const quadPositions = useMemo(() => points.slice(), [points]);
   const { showMediumHighDetail } = useCombinedLOD({
     position: center,
   });
 
   const randomColour = useMemo(() => {
-    // You can seed your RNG or just random:
     return getRandomColor();
   }, []);
 
@@ -151,7 +143,7 @@ export function Branch({
         colour={randomColour}
       />
       <DebugPoints points={points} />
-      {showMediumHighDetail && <CloudQuads positions={quadPositions} />}
+      {/* {showMediumHighDetail && <CloudQuads positions={quadPositions} />} */}
     </group>
   );
 }

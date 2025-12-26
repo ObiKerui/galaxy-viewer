@@ -77,8 +77,8 @@ type tProps = {
 
 export function Lobe({
   center = new THREE.Vector3(0, 0, 0),
-  count = 10,
-  radius = 1.5,
+  count = 100,
+  radius = 3.5,
   opacity = 0.1,
   seed = 1,
 }: tProps) {
